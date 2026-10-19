@@ -1,0 +1,39 @@
+# This is a Declarative Automation Bundle definition for dabproject.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: dabproject
+  uuid: f99090b7-f9f3-49d4-b849-9739773a630f
+
+include:
+  - resources/**/*.yml
+
+
+variables:
+  catalog:
+    description: The catalog to use
+  schema:
+    description: The schema to use
+
+targets:
+  dev:
+    mode: development
+    default: true
+    presets:
+      name_prefix: dev_${workspace.current_user.short_name}
+      source_linked_deployment: false
+    workspace:
+      host: https://dbc-7c3cab38-6bd7.cloud.databricks.com
+    variables:
+      catalog: workspace
+      schema: ${workspace.current_user.short_name}
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-7c3cab38-6bd7.cloud.databricks.com
+      root_path: /Workspace/Users/abhishek.arjunagi@altimetrik.com/PROD/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: workspace
+      schema: prod
+    permissions:
+      - user_name: abhishek.arjunagi@altimetrik.com
+        level: CAN_MANAGE
